@@ -1,6 +1,6 @@
 # ph-scraper
 
-A simple tool to extract public information from profiles and videos.
+A simple tool to extract information from PornHub profiles and videos.
 
 ## About
 
@@ -51,5 +51,5 @@ ph-scraper profile https://example.com/user --get-pub-videos --print-json
 3. Use local cache:
 
 ```bash
-ph-scraper profile https://example.com/user --get-pub-videos --cache /tmp/ph_cache
+ph-scraper profile https://example.com/user --get-pub-videos --cache /tmp/ph_cache-user
 ```
