@@ -7,7 +7,14 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from requests import RequestException, Response, Session
 
-from .constants import BASE_URL, CONTENT_MAP, DOMAIN, KEY_PUB_VIDEOS, VALID_CONTENT_TYPE
+from .constants import (
+    BASE_URL,
+    CONTENT_MAP,
+    DEFAULT_HEADERS,
+    DOMAIN,
+    KEY_PUB_VIDEOS,
+    VALID_CONTENT_TYPE,
+)
 from .errors import ScraperError
 from .url_info import URLInfo
 from .utils.json import read_json, write_json
@@ -21,9 +28,12 @@ class ProfileScraper:
     timeout: int = 10
     new_cache: bool = False
     cache_path: Path | None = None
+    session: Session | None = None
 
     def __post_init__(self):
-        self.session = Session()
+        if not self.session:
+            self.session = Session()
+            self.session.headers.update(DEFAULT_HEADERS)
         self.cache_data = self._cache_load()
         self.url_info = self._parse_url()
 
