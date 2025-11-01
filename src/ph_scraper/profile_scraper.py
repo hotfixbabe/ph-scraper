@@ -25,7 +25,7 @@ from .video import Video
 class ProfileScraper:
     url: str
     retries: int = 10
-    timeout: int = 10
+    timeout: int = 5
     new_cache: bool = False
     cache_path: Path | None = None
     session: Session | None = None
