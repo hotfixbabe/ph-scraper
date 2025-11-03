@@ -7,12 +7,12 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description=(f"{__description__}\n\n"),
         formatter_class=argparse.RawTextHelpFormatter,
+        prog=__title__,
     )
     parser.add_argument(
-        "-v",
         "--version",
         action="version",
-        version=f"{__title__} version {__version__}",
+        version=f"{__title__} {__version__}",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
