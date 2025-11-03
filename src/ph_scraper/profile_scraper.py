@@ -26,6 +26,32 @@ T = TypeVar("T")
 
 @dataclass()
 class ProfileScraper:
+    """
+    Scraper for profile pages.
+
+    Attributes
+    ----------
+    url : str
+        The profile URL to scrape.
+    retries : int, optional
+        Number of retries for HTTP requests. Default is 10.
+    timeout : int, optional
+        Timeout for HTTP requests in seconds. Default is 5.
+    new_cache : bool, optional
+        Whether to ignore existing cache. Default is False.
+    cache_path : Path | None, optional
+        Path to cache file. Default is None.
+    session : Session | None, optional
+        Requests Session to use. Default is None.
+
+    Methods
+    -------
+    get_url_info() -> URLInfo
+        Returns parsed URL information.
+    get_pub_videos() -> list[Video]
+        Returns public videos from the profile.
+    """
+
     url: str
     retries: int = 10
     timeout: int = 5
@@ -48,9 +74,11 @@ class ProfileScraper:
         return False
 
     def get_url_info(self) -> URLInfo:
+        """Returns parsed URL information."""
         return self.url_info
 
     def get_pub_videos(self) -> list[Video]:
+        """Returns public videos from the profile."""
         return self._extract_videos(KEY_PUB_VIDEOS)
 
     def _cache_load(self) -> dict[str, list[str]]:
@@ -189,12 +217,17 @@ def with_profile_scraper(
     """
     Calls a method on ProfileScraper.
 
-    Parameters:
-        method_name: str - the method name to call.
-        method_kwargs: dict - arguments to pass to the method.
-        **scraper_kwargs: other constructor arguments for ProfileScraper
-            (url, retries, timeout, session, etc.)
+    Parameters
+    ----------
+    method_name : str
+        The method name to call.
+    method_kwargs : dict
+        Arguments to pass to the method.
+    **scraper_kwargs
+        Other constructor arguments for ProfileScraper
+        (e.g., url, retries, timeout, session, etc.)
     """
+
     method_kwargs = method_kwargs or {}
 
     with ProfileScraper(**scraper_kwargs) as scraper:
@@ -203,8 +236,10 @@ def with_profile_scraper(
 
 
 def get_profile_url_info(url: str) -> URLInfo:
+    """See ProfileScraper.get_url_info"""
     return with_profile_scraper("get_url_info", url=url)
 
 
 def get_profile_pub_videos(url: str, **scraper_kwargs: Any) -> list[Video]:
+    """See ProfileScraper.get_pub_videos"""
     return with_profile_scraper("get_pub_videos", url=url, **scraper_kwargs)
