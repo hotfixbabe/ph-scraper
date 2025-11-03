@@ -1,28 +1,15 @@
 from pathlib import Path
 
-from ph_scraper import ProfileScraper, Video
-
-from .args_parser import parse_args
-from .utils.json import dump_json
-
-
-def profile_scraper(
-    url: str,
-    cache_path: Path | None = None,
-    method_name: str = "get_profile_data",
-    *args,
-    **kwargs,
-):
-    with ProfileScraper(url, cache_path=cache_path) as scraper:
-        method = getattr(scraper, method_name)
-        return method(*args, **kwargs)
+from ph_scraper import Video, get_profile_pub_videos
+from ph_scraper.args_parser import parse_args
+from ph_scraper.utils.json import dump_json
 
 
-def print_video(args, vs: list[Video]) -> None:
+def print_videos(args, vids: list[Video]) -> None:
     if getattr(args, "print_json", False):
-        print(dump_json([v.to_dict() for v in vs]))
+        print(dump_json([v.to_dict() for v in vids]))
     elif getattr(args, "print_url", False):
-        print("\n".join(v.url for v in vs))
+        print("\n".join(v.url for v in vids))
 
 
 def main():
@@ -32,10 +19,8 @@ def main():
         if args.command == "profile":
             if args.get_pub_videos:
                 cache_path = Path(args.cache) if getattr(args, "cache", None) else None
-                pub_videos = profile_scraper(
-                    args.url, cache_path=cache_path, method_name="get_pub_videos"
-                )
-                print_video(args, pub_videos)
+                vids = get_profile_pub_videos(args.url, cache_path=cache_path)
+                print_videos(args, vids)
 
     except KeyboardInterrupt:
         pass

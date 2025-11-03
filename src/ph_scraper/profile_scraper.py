@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, TypeVar
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
@@ -19,6 +20,8 @@ from .errors import ScraperError
 from .url_info import URLInfo
 from .utils.json import read_json, write_json
 from .video import Video
+
+T = TypeVar("T")
 
 
 @dataclass()
@@ -175,3 +178,33 @@ class ProfileScraper:
             profile_name=profile_name,
             profile_url=f"{BASE_URL}/{content_type}/{profile_name}",
         )
+
+
+def with_profile_scraper(
+    method_name: str,
+    *,
+    method_kwargs: dict[str, Any] | None = None,
+    **scraper_kwargs: Any,
+) -> T:
+    """
+    Calls a method on ProfileScraper.
+
+    Parameters:
+        method_name: str - the method name to call.
+        method_kwargs: dict - arguments to pass to the method.
+        **scraper_kwargs: other constructor arguments for ProfileScraper
+            (url, retries, timeout, session, etc.)
+    """
+    method_kwargs = method_kwargs or {}
+
+    with ProfileScraper(**scraper_kwargs) as scraper:
+        method = getattr(scraper, method_name)
+        return method(**method_kwargs)
+
+
+def get_profile_url_info(url: str) -> URLInfo:
+    return with_profile_scraper("get_url_info", url=url)
+
+
+def get_profile_pub_videos(url: str, **scraper_kwargs: Any) -> list[Video]:
+    return with_profile_scraper("get_pub_videos", url=url, **scraper_kwargs)
