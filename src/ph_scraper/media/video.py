@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
-from .constants import VIDEO_URL_BASE
+from ph_scraper.constants import VIDEO_URL_BASE
 
 
 @dataclass(frozen=True)
