@@ -27,8 +27,12 @@ def parse_args():
 
     # profile group 02
     profile_g2 = profile.add_mutually_exclusive_group()
-    profile_g2.add_argument("-j", "--print-json", action="store_true")
-    profile_g2.add_argument("-u", "--print-url", action="store_true")
-    profile_g2.set_defaults(print_url=True)
+    profile_g2.add_argument(
+        "-j", "--print-json", dest="output_format", action="store_const", const="json"
+    )
+    profile_g2.add_argument(
+        "-u", "--print-url", dest="output_format", action="store_const", const="url"
+    )
+    profile_g2.set_defaults(output_format="url")
 
     return parser.parse_args()
